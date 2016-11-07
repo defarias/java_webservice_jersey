@@ -1,4 +1,4 @@
-package com.webservice.model;
+package com.webservice.pojo;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -7,9 +7,10 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class Classificacao {
+	private int codigo;
     private int codigoUsuario;
     private int codigoReclamacao;
-    private int classificacao;
+    private double classificacao;
 
     public int getCodigoUsuario() {
         return codigoUsuario;
@@ -27,11 +28,19 @@ public class Classificacao {
         this.codigoReclamacao = codigoReclamacao;
     }
 
-    public int getClassificacao() {
+    public double getClassificacao() {
         return classificacao;
     }
 
-    public void setClassificacao(int classificacao) {
+    public void setClassificacao(double classificacao) {
         this.classificacao = classificacao;
     }
+
+	public int getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(int codigo) {
+		this.codigo = codigo;
+	}
 }

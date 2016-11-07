@@ -10,7 +10,7 @@
 		
 		<init-param>
 			<param-name>com.sun.jersey.config.property.packages</param-name>
-			<param-value>com.webservice.resources</param-value>
+			<param-value>com.webservice.model</param-value>
 		</init-param>
 		
 		<init-param>

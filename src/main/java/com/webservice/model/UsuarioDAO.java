@@ -1,4 +1,4 @@
-package com.webservice.resources;
+package com.webservice.model;
 
 import java.lang.reflect.Type;
 import java.security.MessageDigest;
@@ -6,19 +6,21 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import sun.misc.BASE64Encoder;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriInfo;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.webservice.model.Usuario;
+import com.mysql.jdbc.Blob;
 import com.webservice.persistence.DAO;
+import com.webservice.pojo.Usuario;
 
 /**
  * Created by Deywid on 20/07/2016.
@@ -26,7 +28,7 @@ import com.webservice.persistence.DAO;
 
 @Path("/usuario")
 public class UsuarioDAO extends DAO {
-
+	
 	private String criptografar(String senha) throws Exception {
 		MessageDigest digest = MessageDigest.getInstance("MD5");
 		digest.update(senha.getBytes());
@@ -40,9 +42,6 @@ public class UsuarioDAO extends DAO {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Usuario logar(String json) throws Exception {
 		Usuario usuario = construirObjeto(json);
-		System.out.println("Nome: "+usuario.getNome());
-		System.out.println("Email: "+usuario.getEmail());
-		System.out.println("Senha:"+usuario.getSenha());
 		
 		conectarBanco();
 		
@@ -66,7 +65,15 @@ public class UsuarioDAO extends DAO {
 			usuario.setEmail(resultSet.getString("email"));
 			usuario.setSenha(resultSet.getString("senha"));
 			usuario.setFoto(resultSet.getString("foto"));
+			usuario.setByteImagem(resultSet.getBytes("byteImagem"));
 			usuario.setStatus(resultSet.getInt("status"));
+			
+			System.out.println("Nome: "+usuario.getNome());
+			System.out.println("Email: "+usuario.getEmail());
+			System.out.println("Senha:"+usuario.getSenha());
+			System.out.println("Imagem:"+usuario.getFoto());
+			
+			
 		} else {
 			usuario = null;
 		}
@@ -82,12 +89,12 @@ public class UsuarioDAO extends DAO {
 	public Usuario cadastrar(String json) throws Exception {
 		
 		Usuario usuario = construirObjeto(json);
-
-		conectarBanco();
 		
+		conectarBanco();
+				
 		String sql = 
 				"INSERT INTO usuario "
-				+ "VALUES(null, ?,?,?,?,?,?,?)";
+				+ "VALUES(null, ?,?,?,?,?,?,?,?)";
 		
 		preparedStatement = connection.prepareStatement(sql);
 		preparedStatement.setString(1, usuario.getNome());
@@ -96,7 +103,8 @@ public class UsuarioDAO extends DAO {
 		preparedStatement.setString(4, usuario.getEmail());
 		preparedStatement.setString(5, criptografar(usuario.getSenha()));
 		preparedStatement.setString(6, usuario.getFoto());
-		preparedStatement.setInt(7, usuario.getStatus());
+		preparedStatement.setBytes(7, usuario.getByteImagem());
+		preparedStatement.setInt(8, usuario.getStatus());
 		preparedStatement.execute();
 		
 		desconectarBanco();

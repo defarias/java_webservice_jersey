@@ -1,4 +1,4 @@
-package com.webservice.model;
+package com.webservice.pojo;
 
 import java.util.Date;
 
@@ -12,9 +12,8 @@ public class Comentario {
     private int codigo;
 	private int codigoUsuario;
     private int codigoReclamacao;
-    private String Comentario;
-    private Date data;
-    private String criador;
+    private String comentario;
+    private String nomeCriador;
 
     public int getCodigoUsuario() {
         return codigoUsuario;
@@ -33,20 +32,12 @@ public class Comentario {
     }
 
     public String getComentario() {
-        return Comentario;
+        return comentario;
     }
 
     public void setComentario(String comentario) {
-        Comentario = comentario;
+        this.comentario = comentario;
     }
-
-	public Date getData() {
-		return data;
-	}
-
-	public void setData(Date data) {
-		this.data = data;
-	}
 
 	public int getCodigo() {
 		return codigo;
@@ -56,11 +47,11 @@ public class Comentario {
 		this.codigo = codigo;
 	}
 
-	public String getCriador() {
-		return criador;
+	public String getNomeCriador() {
+		return nomeCriador;
 	}
 
-	public void setCriador(String criador) {
-		this.criador = criador;
+	public void setNomeCriador(String nomeCriador) {
+		this.nomeCriador = nomeCriador;
 	}
 }

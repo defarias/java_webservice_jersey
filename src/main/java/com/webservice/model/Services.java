@@ -1,4 +1,4 @@
-package com.webservice.resources;
+package com.webservice.model;
 
 import java.io.File;
 import java.sql.SQLException;
@@ -9,8 +9,8 @@ import javax.ws.rs.Path; //import da biblioteca jersey
 import javax.ws.rs.Produces; //import da biblioteca jersey
 import javax.ws.rs.core.MediaType;
 
-import com.webservice.model.Usuario;
 import com.webservice.persistence.DAO;
+import com.webservice.pojo.Usuario;
 
 @Path("/teste") // o @path define a URI do recurso que nesse caso será /helloworld
 public class Services extends DAO{
@@ -19,8 +19,6 @@ public class Services extends DAO{
 	@Path("/hi")
 	@Produces(MediaType.TEXT_PLAIN) // define qual tipo MIME é retornado para o cliente
 	public String exibir(){
-		
-		new File("imageb").mkdir();
 		return "Hello World";
 	}
 	@GET // utilizando apenas o verbo GET, ou seja, vou apenas ler o recurso

@@ -1,4 +1,4 @@
-package com.webservice.model;
+package com.webservice.pojo;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -15,6 +15,7 @@ public class Usuario{
     private String cpf;
     private String email;
     private String senha;
+    private byte[] byteImagem;
     private String foto;
     private int status;
 
@@ -80,5 +81,13 @@ public class Usuario{
 
 	public void setStatus(int status) {
 		this.status = status;
+	}
+
+	public byte[] getByteImagem() {
+		return byteImagem;
+	}
+
+	public void setByteImagem(byte[] byteImagem) {
+		this.byteImagem = byteImagem;
 	}
 }

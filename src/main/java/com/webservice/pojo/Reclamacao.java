@@ -1,4 +1,4 @@
-package com.webservice.model;
+package com.webservice.pojo;
 
 import java.util.ArrayList;
 
@@ -15,9 +15,11 @@ public class Reclamacao {
     private String foto;
     private double latitude;
     private double longitude;
+    private String endereco;
+    private String bairro;
     private String observacao;
     private int status;
-    private ArrayList<Classificacao> classificacao = new ArrayList<>(); 
+    private double classificacao;
 
     public int getCodigo() {
         return codigo;
@@ -83,11 +85,27 @@ public class Reclamacao {
 		this.codigoUsuario = codigoUsuario;
 	}
 
-	public ArrayList<Classificacao> getClassificacao() {
+	public String getBairro() {
+		return bairro;
+	}
+
+	public void setBairro(String bairro) {
+		this.bairro = bairro;
+	}
+
+	public String getEndereco() {
+		return endereco;
+	}
+
+	public void setEndereco(String endereco) {
+		this.endereco = endereco;
+	}
+
+	public double getClassificacao() {
 		return classificacao;
 	}
 
-	public void setClassificacao(ArrayList<Classificacao> classificacao) {
+	public void setClassificacao(double classificacao) {
 		this.classificacao = classificacao;
 	}
 }

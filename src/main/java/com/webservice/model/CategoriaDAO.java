@@ -1,4 +1,4 @@
-package com.webservice.resources;
+package com.webservice.model;
 
 import java.util.ArrayList;
 
@@ -9,9 +9,9 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
- 
-import com.webservice.model.Categoria;
+
 import com.webservice.persistence.DAO;
+import com.webservice.pojo.Categoria;
 
 /**
  * Created by Deywid on 31/07/2016.

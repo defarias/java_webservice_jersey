@@ -1,4 +1,4 @@
-package com.webservice.resources;
+package com.webservice.model;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -13,9 +13,10 @@ import javax.ws.rs.core.MediaType;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.webservice.model.Classificacao;
-import com.webservice.model.Comentario;
 import com.webservice.persistence.DAO;
+import com.webservice.pojo.Classificacao;
+import com.webservice.pojo.Comentario;
+import com.webservice.pojo.Reclamacao;
 
 @Path("/comentario")
 public class ComentarioDAO extends DAO{
@@ -25,18 +26,16 @@ public class ComentarioDAO extends DAO{
 	@Produces(MediaType.APPLICATION_JSON)
 	public void cadastrar(String json) throws Exception{
 		Comentario comentario = construirObjeto(json);
-		Date data = new Date();
 		conectarBanco();
 		
 		String sql = 
-				"INSERT INTO comentarios"
-				+ "VALUES(null, ?,?,?,?)";
+				"INSERT INTO comentarios "
+				+ "VALUES(null, ?,?,?,NOW())";
 		
 		preparedStatement = connection.prepareStatement(sql);
 		preparedStatement.setInt(1, comentario.getCodigoUsuario());
 		preparedStatement.setInt(2, comentario.getCodigoReclamacao());
 		preparedStatement.setString(3, comentario.getComentario());
-		preparedStatement.setDate(4, (java.sql.Date) data);
 		preparedStatement.execute();
 		
 		desconectarBanco();
@@ -89,15 +88,15 @@ public class ComentarioDAO extends DAO{
 		conectarBanco();
 		
 		String sql = 
-				"SELECT ("
+				"SELECT "
 				+ "comentarios.codigo,"
 				+ "comentarios.codigoUsuario,"
 				+ "comentarios.codigoReclamacoes,"
-				+ "comentarios.comentario,"
-				+ "comentarios.data"
-				+ "usuario.nome) "
+				+ "comentarios.comentario, "
+				+ "usuario.nome "
 				+ "FROM comentarios "
 				+ "INNER JOIN usuario "
+				+ "ON comentarios.codigoUsuario = usuario.codigo "
 				+ "WHERE codigoReclamacoes = ?";
 		
 		preparedStatement = connection.prepareStatement(sql);
@@ -111,11 +110,14 @@ public class ComentarioDAO extends DAO{
 			comentario.setCodigoUsuario(resultSet.getInt("codigoUsuario"));
 			comentario.setCodigoReclamacao(resultSet.getInt("codigoReclamacoes"));
 			comentario.setComentario(resultSet.getString("comentario"));
-			comentario.setData(resultSet.getDate("data"));
-			comentario.setCriador(resultSet.getString("nome"));
+			comentario.setNomeCriador(resultSet.getString("nome"));
 			listaComentarios.add(comentario);
 		}
 		desconectarBanco();
+		
+		for(Comentario c : listaComentarios){
+			System.out.println("Comentario: "+ c.getComentario());
+		}
 		
 		return listaComentarios;
 	}
@@ -128,8 +130,6 @@ public class ComentarioDAO extends DAO{
         Type usuarioType = new TypeToken<Comentario>(){}.getType();
         comentario = gson.fromJson(json, usuarioType);
 		
-        System.out.println("JSON: "+comentario.getComentario());
-
 		return comentario;
 	}
 }

@@ -1,4 +1,4 @@
-package com.webservice.model;
+package com.webservice.pojo;
 
 import javax.xml.bind.annotation.XmlRootElement;
 

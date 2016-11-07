@@ -1,4 +1,4 @@
-package com.webservice.resources;
+package com.webservice.model;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -10,57 +10,86 @@ import javax.ws.rs.core.MediaType;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.webservice.model.Classificacao;
-import com.webservice.model.Reclamacao;
 import com.webservice.persistence.DAO;
+import com.webservice.pojo.Classificacao;
+import com.webservice.pojo.Reclamacao;
 
 @Path("/classificacao")
 public class ClassificacaoDAO extends DAO {
 
 	@POST
+	@Path("/cadastrar")
 	@Produces(MediaType.APPLICATION_JSON)
 	public void cadastrar(String json) throws Exception {
 		Classificacao classificacao = construirObjeto(json);
-		conectarBanco();
+		int codigo = buscarCodigo(classificacao); 
+		System.out.println("Classificacao:"+codigo);
+		if(codigo==0){
+			conectarBanco();
 
-		String sql = "INSERT INTO classificacoes " + "VALUES(?,?,?)";
+			String sql = "INSERT INTO classificacoes " + "VALUES(NULL,?,?,?)";
 
-		preparedStatement = connection.prepareStatement(sql);
-		preparedStatement.setInt(1, classificacao.getCodigoUsuario());
-		preparedStatement.setInt(2, classificacao.getCodigoReclamacao());
-		preparedStatement.setInt(3, classificacao.getClassificacao());
-		preparedStatement.execute();
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, classificacao.getCodigoUsuario());
+			preparedStatement.setInt(2, classificacao.getCodigoReclamacao());
+			preparedStatement.setDouble(3, classificacao.getClassificacao());
+			preparedStatement.execute();
 
-		desconectarBanco();
+			desconectarBanco();
+
+		}else{
+			classificacao.setCodigo(codigo);
+			alterar(classificacao);
+		}
+		
 	}
 
-	public void alterar(String json) throws Exception {
-		Classificacao classificacao = construirObjeto(json);
+	public void alterar(Classificacao classificacao) throws Exception {
 		conectarBanco();
 		
 		String sql = 
-				"UPDATE classificacoes SET"
-				+ "classificacao = ?,"
-				+ "WHERE codigoUsuario = ? "
-				+ "AND codigoReclamacoes = ?";
+				"UPDATE classificacoes SET "
+				+ "classificacao = ? "
+				+ "WHERE codigo = ?";
 		
 		preparedStatement = connection.prepareStatement(sql);
-		preparedStatement.setInt(1, classificacao.getClassificacao());
-		preparedStatement.setInt(2, classificacao.getCodigoUsuario());
-		preparedStatement.setInt(3, classificacao.getCodigoReclamacao());
+		preparedStatement.setDouble(1, classificacao.getClassificacao());
+		preparedStatement.setInt(2, classificacao.getCodigo());
 		preparedStatement.execute();
 		
 		desconectarBanco();
 	}
 	
+	public int buscarCodigo(Classificacao classificacao) throws Exception {
+		int retorno = 0;
+		conectarBanco();
+		
+		String sql = 
+				"SELECT * FROM classificacoes WHERE codigoReclamacoes = ? AND codigoUsuario = ?";
+		
+		preparedStatement = connection.prepareStatement(sql);
+		preparedStatement.setInt(1, classificacao.getCodigoReclamacao());
+		preparedStatement.setInt(2, classificacao.getCodigoUsuario());
+		resultSet = preparedStatement.executeQuery();
+		
+		if(resultSet.next()){
+			classificacao = new Classificacao();
+			classificacao.setCodigo(resultSet.getInt("codigo"));
+			retorno = classificacao.getCodigo();
+		}	
+		desconectarBanco();
+		
+		return retorno;
+	}
 	
-	public ArrayList<Classificacao> buscar(String json) throws Exception {
+	
+	public ArrayList<Classificacao> buscarTodos(String json) throws Exception {
 		Classificacao classificacao = construirObjeto(json);
 		conectarBanco();
 		ArrayList<Classificacao> lista = new ArrayList<>();
 		
 		String sql = 
-				"SELECT * FROM Classificacao WHERE codigoReclamacoes = ?";
+				"SELECT * FROM classificacoes WHERE codigoReclamacoes = ?";
 		
 		preparedStatement = connection.prepareStatement(sql);
 		preparedStatement.setInt(1, classificacao.getCodigoReclamacao());
